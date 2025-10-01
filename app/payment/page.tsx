@@ -261,7 +261,7 @@ export default function PaymentPage() {
             <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
               <div className="flex flex-col items-center p-2 bg-gray-50 rounded-lg">
                 <Calendar className="w-4 h-4 text-blue-600 mb-1" />
-                <span className="text-center">Vencimento: 23/09/2025</span>
+                <span className="text-center">Vencimento: 02/09/2025</span>
               </div>
               <div className="flex flex-col items-center p-2 bg-gray-50 rounded-lg">
                 <FileText className="w-4 h-4 text-purple-600 mb-1" />
