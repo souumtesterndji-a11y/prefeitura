@@ -1,6 +1,7 @@
 import type React from "react"
 import { Suspense } from "react"
 import "./globals.css"
+import { AntiInspect } from "@/components/anti-inspect"
 
 export default function RootLayout({
   children,
@@ -10,6 +11,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans">
+        <AntiInspect />
         <Suspense
           fallback={
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
