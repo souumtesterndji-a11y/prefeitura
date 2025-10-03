@@ -51,9 +51,9 @@ export default function PaymentPixPage() {
 
     const initializePayment = async () => {
       try {
-        console.log("[v0] Initializing payment with Billiards Pay API")
+        console.log("[v0] Initializing payment with Black Cat API")
 
-        const response = await fetch("/api/billiardspay/pix", {
+        const response = await fetch("/api/blackcat/pix", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -68,7 +68,7 @@ export default function PaymentPixPage() {
 
         if (response.ok) {
           const data = await response.json()
-          console.log("[v0] Billiards Pay payment response:", JSON.stringify(data, null, 2))
+          console.log("[v0] Black Cat payment response:", JSON.stringify(data, null, 2))
 
           setPaymentData({
             transaction_id: data.transactionId,
@@ -122,13 +122,13 @@ export default function PaymentPixPage() {
       if (!paymentData.transaction_id) return
 
       setIsVerifying(true)
-      console.log("[v0] Verifying payment status with Billiards Pay")
+      console.log("[v0] Verifying payment status with Black Cat")
 
       try {
-        const response = await fetch(`/api/billiardspay/status/${paymentData.transaction_id}`)
+        const response = await fetch(`/api/blackcat/status/${paymentData.transaction_id}`)
         if (response.ok) {
           const statusData = await response.json()
-          console.log("[v0] Billiards Pay payment status:", statusData)
+          console.log("[v0] Black Cat payment status:", statusData)
 
           setPaymentData((prev) => ({
             ...prev,

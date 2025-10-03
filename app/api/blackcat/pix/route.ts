@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server"
 import { getSupabaseServerClient } from "@/lib/supabase-server"
 
-const BILLIARDSPAY_API_URL = "https://api.billiardspay.com/v1/transactions"
-const PUBLIC_KEY = "pk_gPprOUvafc_aRB4yutaFt2mQegX0CEEaZC5sksB2-4XUVZbT"
-const SECRET_KEY = "sk_6ZNBSq5BnLTxXlFRs6h7ForMPRytCFslC9ofAZmFVB0exLq7"
+const BLACKCAT_API_URL = "https://api.blackcatpagamentos.com/v1/transactions"
+const PUBLIC_KEY = "pk_Ks8p5jHpgvrhWGcR0jGiQzYi5iY6qVbLge6gXaYCVv5pBBJX" // Replace with your Black Cat public key
+const SECRET_KEY = "sk_vbktBHsmUtJZGDlDqsfOibii8H6jNSkjOw94TQgpPKECgu2F" // Replace with your Black Cat secret key
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
     const { amount, customerName, customerEmail, customerDocument } = body
 
-    console.log("[v0] Creating Billiards Pay PIX payment:", {
+    console.log("[v0] Creating Black Cat PIX payment:", {
       amount,
       customerName,
       customerEmail,
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     const documentType = customerDocument.length === 11 ? "cpf" : "cnpj"
     const customerType = customerDocument.length === 11 ? "individual" : "corporation"
 
-    // Prepare request body according to Billiards Pay API
+    // Prepare request body according to Black Cat API
     const requestBody = {
       amount: amountInCents,
       paymentMethod: "pix",
@@ -57,12 +57,13 @@ export async function POST(request: Request) {
       },
       externalRef: `iptu-${Date.now()}`,
       metadata: "Pagamento de OB BLACK",
+      ip: ip,
     }
 
-    console.log("[v0] Billiards Pay request body:", JSON.stringify(requestBody, null, 2))
+    console.log("[v0] Black Cat request body:", JSON.stringify(requestBody, null, 2))
 
-    // Make request to Billiards Pay API
-    const response = await fetch(BILLIARDSPAY_API_URL, {
+    // Make request to Black Cat API
+    const response = await fetch(BLACKCAT_API_URL, {
       method: "POST",
       headers: {
         Authorization: auth,
@@ -72,16 +73,16 @@ export async function POST(request: Request) {
       body: JSON.stringify(requestBody),
     })
 
-    console.log("[v0] Billiards Pay response status:", response.status)
+    console.log("[v0] Black Cat response status:", response.status)
 
     const responseText = await response.text()
-    console.log("[v0] Billiards Pay response text:", responseText)
+    console.log("[v0] Black Cat response text:", responseText)
 
     let responseData
     try {
       responseData = JSON.parse(responseText)
     } catch (e) {
-      console.error("[v0] Failed to parse Billiards Pay response as JSON:", e)
+      console.error("[v0] Failed to parse Black Cat response as JSON:", e)
       return NextResponse.json(
         {
           error: "Invalid response from payment provider",
@@ -91,7 +92,7 @@ export async function POST(request: Request) {
       )
     }
 
-    console.log("[v0] Billiards Pay response data:", JSON.stringify(responseData, null, 2))
+    console.log("[v0] Black Cat response data:", JSON.stringify(responseData, null, 2))
 
     if (!response.ok) {
       return NextResponse.json(
@@ -103,6 +104,7 @@ export async function POST(request: Request) {
       )
     }
 
+    // Save payment to database
     try {
       const supabase = await getSupabaseServerClient()
       const { error: dbError } = await supabase.from("payments").insert({
@@ -128,13 +130,13 @@ export async function POST(request: Request) {
     return NextResponse.json({
       transactionId: responseData.id,
       status: responseData.status,
-      qrCode: responseData.pix?.qrcode, // Billiards Pay uses lowercase "qrcode"
-      pixCode: responseData.pix?.qrcode, // Use qrcode as pixCode for compatibility
+      qrCode: responseData.pix?.qrcode,
+      pixCode: responseData.pix?.qrcode,
       expiresAt: responseData.pix?.expirationDate,
       amount: amount,
     })
   } catch (error) {
-    console.error("[v0] Error creating Billiards Pay PIX:", error)
+    console.error("[v0] Error creating Black Cat PIX:", error)
     return NextResponse.json(
       {
         error: "Failed to create PIX payment",
