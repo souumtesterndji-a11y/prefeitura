@@ -39,6 +39,17 @@ export default function ResultsPage() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
+  // Função para formatar a data como DD/MM/AAAA
+  const formatDate = (date: Date) => {
+    const day = String(date.getDate()).padStart(2, '0')
+    const month = String(date.getMonth() + 1).padStart(2, '0') // Mês é 0-indexed
+    const year = date.getFullYear()
+    return `${day}/${month}/${year}`
+  }
+  
+  // Data de hoje formatada
+  const todayDate = formatDate(new Date())
+
   useEffect(() => {
     // Check if CNPJ exists in session storage
     const storedCnpj = sessionStorage.getItem("cnpj")
@@ -67,11 +78,11 @@ export default function ResultsPage() {
     // Countdown timer
     const updateCountdown = () => {
       const now = new Date().getTime()
-      const tomorrow = new Date()
-      tomorrow.setDate(tomorrow.getDate() + 1)
-      tomorrow.setHours(23, 59, 59, 999)
+      const endOfToday = new Date()
+      endOfToday.setHours(23, 59, 59, 999) // Define para o final do dia de hoje
 
-      const distance = tomorrow.getTime() - now
+      // Lógica de cálculo da distância CORRIGIDA e simplificada
+      const distance = endOfToday.getTime() - now
 
       const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
@@ -442,7 +453,8 @@ export default function ResultsPage() {
                   </div>
                   <div>
                     <p className="text-xs text-gray-600">Prazo Final</p>
-                    <p className="text-sm font-bold countdown">{cnpjData?.anvisa.prazo_final || "23/09/2025"}</p>
+                    {/* Alterado para usar a data de hoje */}
+                    <p className="text-sm font-bold countdown">{todayDate}</p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-600">Status</p>
