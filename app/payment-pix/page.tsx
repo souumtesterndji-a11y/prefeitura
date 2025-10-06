@@ -291,7 +291,7 @@ export default function PaymentPixPage() {
             </div>
             <div className="space-y-1">
               <span className="text-gray-600">Vencimento:</span>
-              <p className="font-semibold text-red-600">05/10/2025</p>
+              <p className="font-semibold text-red-600">06/10/2025</p>
             </div>
             <div className="space-y-1">
               <span className="text-gray-600">Status:</span>
