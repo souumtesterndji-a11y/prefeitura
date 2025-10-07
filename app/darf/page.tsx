@@ -375,7 +375,7 @@ export default function DARFPage() {
                     <div className="relative">
                       <label className="floating-label absolute -top-1 left-2 bg-white px-1">Data de Vencimento</label>
                       <div className="border border-red-200 rounded p-2 bg-red-50">
-                        <p className="font-semibold text-red-700 text-sm">06/10/2025</p>
+                        <p className="font-semibold text-red-700 text-sm">07/10/2025</p>
                       </div>
                     </div>
                   </div>
